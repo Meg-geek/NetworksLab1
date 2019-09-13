@@ -29,10 +29,9 @@ public class App {
             boolean timeout = true;
             while(timeout){
                 try{
-                    byte[] recvMsg = new byte[RECV_BUF_SIZE];
-                    DatagramPacket packetRecv = new DatagramPacket(recvMsg, recvMsg.length);
+                    DatagramPacket packetRecv = new DatagramPacket(new byte[RECV_BUF_SIZE], RECV_BUF_SIZE);
                     socket.receive(packetRecv);
-                    appsInfo.add(packetRecv.getAddress().getHostAddress(), Arrays.toString(recvMsg));
+                    appsInfo.add(packetRecv.getAddress().getHostAddress(), new String(packetRecv.getData()));
                 } catch(SocketTimeoutException ex){
                     timeout = false;
                 }
