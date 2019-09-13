@@ -1,22 +1,19 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.Date;
+import java.util.Arrays;
 
 public class App {
     public static final int PORT = 7777;
     public static final int TIMEOUT = 2000;
     public static final int RECV_BUF_SIZE = 1000;
+    public static final int UPDATE_LIST_DELAY = 10000;
     private MulticastSocket socket;
     private InetAddress group;
-    private View view;
-
-    public App(){
-        view = new SwingView();
-    }
+    private AppsInfo appsInfo = new AppsInfo(UPDATE_LIST_DELAY);
 
     private void configureSocket (String multicastGroup) throws IOException{
         socket = new MulticastSocket(PORT);
-        socket.bind(new InetSocketAddress(PORT));
+        //socket.bind(new InetSocketAddress(PORT));
         group = InetAddress.getByName(multicastGroup);
         socket.joinGroup(group);
     }
@@ -35,10 +32,12 @@ public class App {
                     byte[] recvMsg = new byte[RECV_BUF_SIZE];
                     DatagramPacket packetRecv = new DatagramPacket(recvMsg, recvMsg.length);
                     socket.receive(packetRecv);
+                    appsInfo.add(packetRecv.getAddress().getHostAddress(), Arrays.toString(recvMsg));
                 } catch(SocketTimeoutException ex){
                     timeout = false;
                 }
             }
+            appsInfo.updateInfo();
         }
     }
 }
