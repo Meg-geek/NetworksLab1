@@ -1,5 +1,5 @@
-import java.util.ArrayList;
+import java.util.Set;
 
 public interface View<T> {
-    void update(ArrayList<T> parameters); //String[] ?
+    void update(Set<T> parameters); //String[] ?
 }

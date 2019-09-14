@@ -1,8 +1,9 @@
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppsInfo {
-    private ArrayList<AppRecord> appsInfo = new ArrayList<>();
+    private Map<String, AppRecord> appsInfo = new HashMap<>();
     private int MAX_MILSEC_DELAY;
     private View view;
 
@@ -12,28 +13,31 @@ public class AppsInfo {
     }
 
     public void add(String ip, String msg){
-        appsInfo.add(new AppRecord(ip, msg));
+        if(appsInfo.containsKey(ip)){
+            appsInfo.get(ip).renewRecvDate();
+        } else {
+            appsInfo.put(ip, new AppRecord(msg));
+        }
     }
 
     public void updateInfo(){
         Date nowDate = new Date();
-        for(AppRecord record : appsInfo){
-            if(record.getRecvDate().getTime() - nowDate.getTime() > MAX_MILSEC_DELAY){
-                appsInfo.remove(record);
+        for(Map.Entry<String, AppRecord> record : appsInfo.entrySet()){
+            if(record.getValue().getRecvDate().getTime() - nowDate.getTime() > MAX_MILSEC_DELAY){
+                appsInfo.remove(record.getKey());
             }
         }
-        view.update(appsInfo);
+        view.update(appsInfo.entrySet());
     }
 }
 
 
 class AppRecord {
-    private String msg, ipAddress;
+    private String msg;
     private Date recvDate;
 
-    public AppRecord(String ip, String msg){
+    public AppRecord(String msg){
         this.msg = msg;
-        ipAddress = ip;
         this.recvDate = new Date();
     }
 
@@ -41,11 +45,11 @@ class AppRecord {
         return msg;
     }
 
-    public String getIpAddress(){
-        return ipAddress;
-    }
-
     public Date getRecvDate(){
         return recvDate;
+    }
+
+    public void renewRecvDate(){
+        recvDate = new Date();
     }
 }

@@ -1,7 +1,8 @@
 import javax.swing.*;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
-public class SwingView implements View<AppRecord> {
+public class SwingView implements View<Map.Entry<String, AppRecord>> {
     private JFrame frame;
     public static String title = "NETWORKS LAB 1";
     private JPanel panel;
@@ -39,11 +40,13 @@ public class SwingView implements View<AppRecord> {
 
 
     @Override
-    public void update(ArrayList<AppRecord> parameters){
+    public void update(Set<Map.Entry<String, AppRecord>> parameters){
         infoArea.setText(null);
-        for(AppRecord record : parameters){
-            infoArea.append(record.getIpAddress() + " " + record.getMsg() + " " + record.getRecvDate()
-            + System.lineSeparator());
+        for(Map.Entry<String, AppRecord> record : parameters){
+            infoArea.append("IP: " + record.getKey() +
+                    " MESSAGE: " + record.getValue().getMsg() +
+                    " DATE: " + record.getValue().getRecvDate() +
+                    System.lineSeparator());
         }
     }
 }
