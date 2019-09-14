@@ -40,6 +40,7 @@ public class SwingView implements View<AppRecord> {
 
     @Override
     public void update(ArrayList<AppRecord> parameters){
+        infoArea.setText(null);
         for(AppRecord record : parameters){
             infoArea.append(record.getIpAddress() + " " + record.getMsg() + " " + record.getRecvDate()
             + System.lineSeparator());
