@@ -12,7 +12,7 @@ public class App {
 
     private void configureSocket (String multicastGroup) throws IOException{
         socket = new MulticastSocket(PORT);
-        //socket.bind(new InetSocketAddress(PORT));
+        //socket = new MulticastSocket(new InetSocketAddress("192.168.56.1", PORT));
         group = InetAddress.getByName(multicastGroup);
         socket.joinGroup(group);
     }

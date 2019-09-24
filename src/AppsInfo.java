@@ -1,6 +1,4 @@
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AppsInfo {
     private Map<String, AppRecord> appsInfo = new HashMap<>();
@@ -22,10 +20,14 @@ public class AppsInfo {
 
     public void updateInfo(){
         Date nowDate = new Date();
+        List<String> keyToDel = new ArrayList<>();
         for(Map.Entry<String, AppRecord> record : appsInfo.entrySet()){
-            if(record.getValue().getRecvDate().getTime() - nowDate.getTime() > MAX_MILSEC_DELAY){
-                appsInfo.remove(record.getKey());
+            if(nowDate.getTime() - record.getValue().getRecvDate().getTime() > MAX_MILSEC_DELAY){
+                keyToDel.add(record.getKey());
             }
+        }
+        for(String keyDel: keyToDel){
+            appsInfo.remove(keyDel);
         }
         view.update(appsInfo.entrySet());
     }
