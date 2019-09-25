@@ -1,9 +1,11 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.Date;
 
 public class App {
     public static final int PORT = 7777;
     public static final int TIMEOUT = 2000;
+    public static final int TIMEOUT_WAIT = TIMEOUT*2;
     public static final int RECV_BUF_SIZE = 1000;
     public static final int UPDATE_LIST_DELAY = 10000;
     private MulticastSocket socket;
@@ -12,9 +14,9 @@ public class App {
 
     private void configureSocket (String multicastGroup) throws IOException{
         socket = new MulticastSocket(PORT);
-        //socket = new MulticastSocket(new InetSocketAddress("192.168.56.1", PORT));
         group = InetAddress.getByName(multicastGroup);
         socket.joinGroup(group);
+        socket.setSoTimeout(TIMEOUT);
     }
 
     public void work(String multicastGroup) throws IOException {
@@ -24,9 +26,9 @@ public class App {
                 group, PORT);
         while(true) {
             socket.send(packetSend);
-            socket.setSoTimeout(TIMEOUT);
             boolean timeout = true;
-            while(timeout){
+            long lastTime = new Date().getTime();
+            while(timeout && new Date().getTime() - lastTime < TIMEOUT_WAIT){
                 try{
                     DatagramPacket packetRecv = new DatagramPacket(new byte[RECV_BUF_SIZE], RECV_BUF_SIZE);
                     socket.receive(packetRecv);
